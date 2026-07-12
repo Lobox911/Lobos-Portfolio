@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "next dev --port 3000 --hostname 0.0.0.0",
+    "dev": "node dev-wrapper.js dev",
     "build": "next build",
-    "start": "next start --port 3000 --hostname 0.0.0.0",
+    "start": "node dev-wrapper.js start",
     "clean": "rm -rf .next dist server.js",
     "lint": "tsc --noEmit"
   },

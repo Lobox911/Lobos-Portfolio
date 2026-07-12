@@ -1,6 +1,6 @@
-@import "tailwindcss";
-
 @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+@import "tailwindcss";
 
 @theme {
   --font-sans: 'Instrument Sans', system-ui, -apple-system, sans-serif;
