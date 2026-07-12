@@ -98,7 +98,7 @@ function NmdSimulator() {
       <button
         onClick={startSimulation}
         disabled={isSimulating}
-        className="w-full py-1.5 bg-[#2036E8] hover:bg-[#1c30cf] disabled:bg-slate-800 text-white font-sans text-xs font-bold rounded transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+        className="w-full py-1.5 bg-emerald-500 hover:bg-emerald-400 disabled:bg-slate-800 text-slate-950 font-sans text-xs font-bold rounded transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
       >
         <Play className="w-3.5 h-3.5" /> 
         {isSimulating ? 'Processing Transact...' : 'Simulate API Dispatch'}
@@ -149,7 +149,7 @@ function LeadMapSimulator() {
   return (
     <div className="bg-[#16191F] text-slate-100 rounded-xl p-4 font-mono text-xs border border-slate-850 space-y-3">
       <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-        <span className="font-bold text-[#2036E8] flex items-center gap-1.5">
+        <span className="font-bold text-sky-400 flex items-center gap-1.5">
           <Layers className="w-3.5 h-3.5" /> osm_lead_scraper.py
         </span>
         <span className="text-[10px] text-slate-400">Live Simulation</span>
@@ -161,7 +161,7 @@ function LeadMapSimulator() {
             value={city}
             disabled={isScraping}
             onChange={(e) => setCity(e.target.value)}
-            className="flex-1 bg-slate-900 border border-slate-800 rounded p-1 text-[10px] text-slate-300 font-mono outline-none focus:border-blue-500"
+            className="flex-1 bg-slate-900 border border-slate-800 rounded p-1 text-[10px] text-slate-300 font-mono outline-none focus:border-sky-500"
           >
             <option value="Miami, FL">Miami, FL (Plumbing)</option>
             <option value="Austin, TX">Austin, TX (Roofing)</option>
@@ -170,7 +170,7 @@ function LeadMapSimulator() {
           <button
             onClick={startScrape}
             disabled={isScraping}
-            className="px-3 bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-800 text-black font-sans font-extrabold text-[10px] rounded transition-colors cursor-pointer"
+            className="px-3 bg-sky-500 hover:bg-sky-400 disabled:bg-slate-800 text-slate-950 font-sans font-extrabold text-[10px] rounded transition-colors cursor-pointer"
           >
             {isScraping ? 'Scraping...' : 'Scan Leads'}
           </button>
@@ -998,11 +998,11 @@ export default function ProjectCardRow({ project, theme = 'paper' }: ProjectCard
                 {/* Challenge Block */}
                 <div className={`p-4 sm:p-5 rounded-xl border space-y-2 ${
                   theme === 'midnight'
-                    ? 'bg-rose-950/10 border-rose-900/30 text-rose-200'
-                    : 'bg-rose-50/60 border-rose-100 text-rose-950'
+                    ? 'bg-slate-900/40 border-slate-800 text-slate-200'
+                    : 'bg-[#16191F]/5 border-[#16191F]/10 text-[#16191F]'
                 }`}>
-                  <h3 className="font-mono text-[10px] font-black uppercase tracking-wider flex items-center gap-1.5">
-                    <AlertTriangle className="w-3.5 h-3.5" /> The Operational Challenge
+                  <h3 className="font-mono text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 text-slate-500">
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-500/90" /> The Operational Challenge
                   </h3>
                   <p className="text-xs sm:text-sm leading-relaxed">
                     {project.challenge || 'Client faced fragmented operations with offline manual logs, blocking growth and slowing deployment speed.'}
@@ -1041,10 +1041,14 @@ export default function ProjectCardRow({ project, theme = 'paper' }: ProjectCard
                     {/* Step bar indicator */}
                     <div className="relative flex items-center justify-between px-1.5 pb-2">
                       {/* Background connecting line */}
-                      <div className="absolute left-4 right-4 h-0.5 bg-slate-800 top-4 -translate-y-1/2 z-0" />
+                      <div className={`absolute left-4 right-4 h-0.5 top-4 -translate-y-1/2 z-0 ${
+                        theme === 'midnight' ? 'bg-slate-800' : 'bg-[#E2E0D6]'
+                      }`} />
                       {/* Active progress line */}
                       <div 
-                        className="absolute left-4 h-0.5 bg-[#2036E8] dark:bg-emerald-500 top-4 -translate-y-1/2 z-0 transition-all duration-300"
+                        className={`absolute left-4 h-0.5 top-4 -translate-y-1/2 z-0 transition-all duration-300 ${
+                          theme === 'midnight' ? 'bg-emerald-500' : 'bg-[#2036E8]'
+                        }`}
                         style={{ width: `${(activePhaseIndex / 3) * 100}%` }}
                       />
                       
@@ -1060,10 +1064,16 @@ export default function ProjectCardRow({ project, theme = 'paper' }: ProjectCard
                             {/* Phase Node Circle */}
                             <div className={`w-8 h-8 rounded-full flex items-center justify-center border font-mono text-xs font-bold transition-all duration-300 ${
                               isActive
-                                ? 'bg-[#2036E8] text-white border-[#2036E8] dark:bg-emerald-500 dark:text-black dark:border-emerald-500 scale-110 shadow-lg'
+                                ? theme === 'midnight'
+                                  ? 'bg-emerald-500 text-black border-emerald-500 scale-110 shadow-[0_0_12px_rgba(16,185,129,0.3)]'
+                                  : 'bg-[#2036E8] text-white border-[#2036E8] scale-110 shadow-md'
                                 : isCompleted
-                                  ? 'bg-emerald-500/10 border-emerald-500 text-emerald-400'
-                                  : 'bg-slate-950 border-slate-800 text-slate-500 hover:border-slate-700'
+                                  ? theme === 'midnight'
+                                    ? 'bg-emerald-500/15 border-emerald-500 text-emerald-400'
+                                    : 'bg-[#2036E8]/10 border-[#2036E8] text-[#2036E8]'
+                                  : theme === 'midnight'
+                                    ? 'bg-slate-950 border-slate-800 text-slate-500 hover:border-slate-700'
+                                    : 'bg-white border-[#E2E0D6] text-slate-400 hover:border-slate-400'
                             }`}>
                               {step.phase}
                             </div>
@@ -1092,7 +1102,11 @@ export default function ProjectCardRow({ project, theme = 'paper' }: ProjectCard
                                 {activeStep.title}
                               </h4>
                             </div>
-                            <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded text-[8px] font-mono font-bold flex items-center gap-1 shrink-0">
+                            <span className={`px-2 py-0.5 rounded text-[8px] font-mono font-bold flex items-center gap-1 shrink-0 ${
+                              theme === 'midnight'
+                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                : 'bg-[#2036E8]/10 text-[#2036E8] border border-[#2036E8]/20'
+                            }`}>
                               <Check className="w-2.5 h-2.5" /> COMPLETED
                             </span>
                           </div>
@@ -1111,8 +1125,12 @@ export default function ProjectCardRow({ project, theme = 'paper' }: ProjectCard
                               </span>
                               <ul className="space-y-1">
                                 {activeStep.deliverables.map((item, i) => (
-                                  <li key={i} className="flex items-center gap-1.5 text-[10px] text-slate-300/90 dark:text-slate-300">
-                                    <span className="w-1 h-1 rounded-full bg-[#2036E8] dark:bg-emerald-400 shrink-0"></span>
+                                  <li key={i} className={`flex items-center gap-1.5 text-[10px] ${
+                                    theme === 'midnight' ? 'text-slate-300' : 'text-[#3E4249]'
+                                  }`}>
+                                    <span className={`w-1 h-1 rounded-full shrink-0 ${
+                                      theme === 'midnight' ? 'bg-emerald-400' : 'bg-[#2036E8]'
+                                    }`}></span>
                                     <span className="truncate" title={item}>{item}</span>
                                   </li>
                                 ))}
@@ -1150,14 +1168,20 @@ export default function ProjectCardRow({ project, theme = 'paper' }: ProjectCard
                 <div className={`p-4 sm:p-5 rounded-xl border flex gap-3.5 items-start ${
                   theme === 'midnight'
                     ? 'bg-emerald-950/15 border-emerald-900/30 text-emerald-200'
-                    : 'bg-emerald-50/60 border-emerald-100 text-emerald-950'
+                    : 'bg-[#16191F] border-[#16191F] text-[#FCFBFA] shadow-sm'
                 }`}>
-                  <Award className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                  <Award className={`w-5 h-5 shrink-0 mt-0.5 ${
+                    theme === 'midnight' ? 'text-emerald-400' : 'text-amber-300'
+                  }`} />
                   <div className="space-y-1.5">
-                    <h3 className="font-mono text-[10px] font-black uppercase tracking-wider text-emerald-400">
+                    <h3 className={`font-mono text-[10px] font-black uppercase tracking-wider ${
+                      theme === 'midnight' ? 'text-emerald-400' : 'text-slate-400'
+                    }`}>
                       Measurable Business Result
                     </h3>
-                    <p className="text-xs sm:text-sm font-semibold leading-relaxed">
+                    <p className={`text-xs sm:text-sm font-semibold leading-relaxed ${
+                      theme === 'midnight' ? '' : 'text-[#FCFBFA]'
+                    }`}>
                       {project.result || 'Achieved high uptime, optimized core web vital speed scores, and cut down dispatch cycle overhead by 65%.'}
                     </p>
                   </div>
@@ -1186,7 +1210,7 @@ export default function ProjectCardRow({ project, theme = 'paper' }: ProjectCard
 
               {/* RIGHT COLUMN: Technical Blueprint & Interactive Simulation Sandbox (40% width on desktop) */}
               <div className={`lg:col-span-5 p-6 sm:p-8 space-y-6 flex flex-col justify-between ${
-                theme === 'midnight' ? 'bg-[#0E1117]/60' : 'bg-[#F2EFE8]/40'
+                theme === 'midnight' ? 'bg-[#0E1117]/60' : 'bg-[#FAF9F6]'
               }`}>
                 
                 {/* Sandbox Header */}
