@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { PROPOSAL_MODULES } from '../data';
 import { ProposalModule } from '../types';

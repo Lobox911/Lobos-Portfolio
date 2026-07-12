@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect, useRef } from 'react';
 import { LogLine } from '../types';
 import { INITIAL_LOGS } from '../data';

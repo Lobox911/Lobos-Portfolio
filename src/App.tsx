@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { INITIAL_PROJECTS, SERVICES } from './data';
 import { Project } from './types';
