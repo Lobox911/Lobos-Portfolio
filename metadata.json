@@ -1,0 +1,6 @@
+{
+  "name": "Lobos - Full-Stack Developer Portfolio",
+  "description": "An interactive, high-performance portfolio featuring an animated deployment simulator, project scope calculator, and responsive console.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
