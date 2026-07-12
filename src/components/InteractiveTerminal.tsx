@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Terminal, X, ChevronRight, CornerDownLeft } from 'lucide-react';
 
 interface HistoryItem {
@@ -151,78 +152,94 @@ export default function InteractiveTerminal() {
   return (
     <>
       {/* Floating Toggle Button */}
-      <button
+      <motion.button
+        whileHover={{ scale: 1.06, y: -2 }}
+        whileTap={{ scale: 0.94 }}
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 bg-[#2036E8] text-white hover:bg-[#1626A8] p-3.5 rounded-full shadow-[0_8px_30px_rgb(32,54,232,0.36)] hover:shadow-[0_8px_30px_rgb(32,54,232,0.5)] transition-all cursor-pointer flex items-center gap-2 group hover:scale-105 active:scale-95"
+        className="fixed bottom-6 right-6 z-50 bg-[#2036E8] text-white hover:bg-[#1626A8] p-3.5 rounded-full shadow-[0_8px_30px_rgb(32,54,232,0.36)] hover:shadow-[0_8px_30px_rgb(32,54,232,0.5)] transition-all cursor-pointer flex items-center gap-2 group whitespace-nowrap"
         title="Open Developer Console"
       >
         <Terminal className="w-5 h-5" />
-        <span className="text-xs font-mono font-bold max-w-0 overflow-hidden group-hover:max-w-[100px] transition-all duration-300 ease-out whitespace-nowrap">
+        <span className="text-xs font-mono font-bold max-w-0 overflow-hidden group-hover:max-w-[120px] transition-all duration-300 ease-out whitespace-nowrap">
           Lobos Terminal
         </span>
-      </button>
+      </motion.button>
 
       {/* Terminal Modal/Overlay */}
-      {isOpen && (
-        <div className="fixed inset-0 bg-[#16191F]/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div 
-            className="bg-[#16191F] border border-slate-700 w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden flex flex-col h-[480px]"
-            onClick={e => e.stopPropagation()}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-[#16191F]/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setIsOpen(false)}
           >
-            {/* Header bar */}
-            <div className="flex items-center justify-between px-4 py-3 bg-slate-900 border-b border-slate-800">
-              <div className="flex items-center gap-2 text-slate-300">
-                <Terminal className="w-4 h-4 text-[#2036E8]" />
-                <span className="font-mono text-xs font-semibold">Terminal — lobos@dev: ~ (Interactive Mode)</span>
-              </div>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="text-slate-500 hover:text-white p-1 rounded hover:bg-slate-800 transition-colors cursor-pointer"
-                title="Close terminal"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Console Screen logs */}
-            <div 
-              className="flex-1 p-5 overflow-y-auto font-mono text-xs text-slate-300 space-y-4 custom-scrollbar"
-              onClick={() => inputRef.current?.focus()}
+            <motion.div 
+              initial={{ scale: 0.95, y: 15, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.95, y: 15, opacity: 0 }}
+              transition={{ type: "spring", duration: 0.4 }}
+              className="bg-[#16191F] border border-slate-700 w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden flex flex-col h-[480px]"
+              onClick={e => e.stopPropagation()}
             >
-              {history.map((item, idx) => (
-                <div key={idx} className="space-y-1.5">
-                  <div className="flex items-center text-slate-500 text-[11px]">
-                    <span className="text-emerald-500">lobos@dev:~$</span>
-                    <span className="ml-2 font-bold text-slate-200">{item.command}</span>
-                  </div>
-                  <div className="pl-4 leading-relaxed">{item.output}</div>
+              {/* Header bar */}
+              <div className="flex items-center justify-between px-4 py-3 bg-slate-900 border-b border-slate-800">
+                <div className="flex items-center gap-2 text-slate-300">
+                  <Terminal className="w-4 h-4 text-[#2036E8]" />
+                  <span className="font-mono text-xs font-semibold">Terminal — lobos@dev: ~ (Interactive Mode)</span>
                 </div>
-              ))}
-              <div ref={terminalEndRef} />
-            </div>
-
-            {/* Command Input bar */}
-            <form 
-              onSubmit={handleCommand}
-              className="px-4 py-3 bg-slate-900 border-t border-slate-800 flex items-center gap-2 text-slate-400 font-mono"
-            >
-              <ChevronRight className="w-4 h-4 text-[#2036E8] shrink-0" />
-              <input
-                ref={inputRef}
-                type="text"
-                placeholder='Type a command (e.g. "skills", "projects", "neofetch")...'
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                className="flex-1 bg-transparent border-0 outline-none focus:ring-0 text-white font-mono text-xs placeholder-slate-600"
-              />
-              <div className="hidden md:flex items-center gap-1 text-[10px] text-slate-600">
-                <span>Enter</span>
-                <CornerDownLeft className="w-2.5 h-2.5" />
+                <motion.button
+                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setIsOpen(false)}
+                  className="text-slate-500 hover:text-white p-1 rounded hover:bg-slate-800 transition-colors cursor-pointer"
+                  title="Close terminal"
+                >
+                  <X className="w-4 h-4" />
+                </motion.button>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
+
+              {/* Console Screen logs */}
+              <div 
+                className="flex-1 p-5 overflow-y-auto font-mono text-xs text-slate-300 space-y-4 custom-scrollbar"
+                onClick={() => inputRef.current?.focus()}
+              >
+                {history.map((item, idx) => (
+                  <div key={idx} className="space-y-1.5">
+                    <div className="flex items-center text-slate-500 text-[11px]">
+                      <span className="text-emerald-500">lobos@dev:~$</span>
+                      <span className="ml-2 font-bold text-slate-200">{item.command}</span>
+                    </div>
+                    <div className="pl-4 leading-relaxed">{item.output}</div>
+                  </div>
+                ))}
+                <div ref={terminalEndRef} />
+              </div>
+
+              {/* Command Input bar */}
+              <form 
+                onSubmit={handleCommand}
+                className="px-4 py-3 bg-slate-900 border-t border-slate-800 flex items-center gap-2 text-slate-400 font-mono"
+              >
+                <ChevronRight className="w-4 h-4 text-[#2036E8] shrink-0" />
+                <input
+                  ref={inputRef}
+                  type="text"
+                  placeholder='Type a command (e.g. "skills", "projects", "neofetch")...'
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  className="flex-1 bg-transparent border-0 outline-none focus:ring-0 text-white font-mono text-xs placeholder-slate-600"
+                />
+                <div className="hidden md:flex items-center gap-1 text-[10px] text-slate-600">
+                  <span>Enter</span>
+                  <CornerDownLeft className="w-2.5 h-2.5" />
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

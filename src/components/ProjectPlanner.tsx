@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion } from 'motion/react';
 import { PROPOSAL_MODULES } from '../data';
 import { ProposalModule } from '../types';
 import { Sparkles, Calendar, Receipt, ChevronRight, Copy, Check, Info } from 'lucide-react';
@@ -91,7 +92,9 @@ Estimate: $${finalPrice.toLocaleString()} in ~${finalDays} business days.`;
           {PROPOSAL_MODULES.map(module => {
             const isSelected = selectedIds.includes(module.id);
             return (
-              <div
+              <motion.div
+                whileHover={{ scale: 1.01, x: 2 }}
+                whileTap={{ scale: 0.99 }}
                 key={module.id}
                 onClick={() => toggleModule(module.id)}
                 className={`border p-4 rounded-lg cursor-pointer transition-all flex items-start gap-3 select-none ${
@@ -104,7 +107,7 @@ Estimate: $${finalPrice.toLocaleString()} in ~${finalDays} business days.`;
                   type="checkbox"
                   checked={isSelected}
                   onChange={() => {}} // toggled by parent onClick
-                  className="mt-1 accent-[#2036E8] w-4 h-4"
+                  className="mt-1 accent-[#2036E8] w-4 h-4 cursor-pointer"
                 />
                 <div className="flex-1">
                   <div className="flex justify-between items-center gap-2">
@@ -113,7 +116,7 @@ Estimate: $${finalPrice.toLocaleString()} in ~${finalDays} business days.`;
                   </div>
                   <p className="text-[12px] text-[#565B63] mt-1 leading-relaxed">{module.description}</p>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
@@ -128,21 +131,35 @@ Estimate: $${finalPrice.toLocaleString()} in ~${finalDays} business days.`;
             </div>
           </div>
           
-          <div className="flex bg-[#E2E0D6]/40 p-1 rounded-lg">
+          <div className="flex bg-[#E2E0D6]/40 p-1 rounded-lg relative">
             <button
               onClick={() => setSpeed('standard')}
-              className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
-                speed === 'standard' ? 'bg-white text-[#16191F] shadow-sm' : 'text-[#565B63] hover:text-[#16191F]'
+              className={`relative px-3 py-1.5 rounded-md text-xs font-semibold transition-colors duration-200 cursor-pointer z-10 ${
+                speed === 'standard' ? 'text-[#16191F]' : 'text-[#565B63] hover:text-[#16191F]'
               }`}
             >
+              {speed === 'standard' && (
+                <motion.span
+                  layoutId="planner-speed-pill"
+                  className="absolute inset-0 bg-white rounded-md shadow-sm -z-10"
+                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                />
+              )}
               Standard
             </button>
             <button
               onClick={() => setSpeed('expedited')}
-              className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
-                speed === 'expedited' ? 'bg-[#2036E8] text-white shadow-sm' : 'text-[#565B63] hover:text-[#16191F]'
+              className={`relative px-3 py-1.5 rounded-md text-xs font-semibold transition-colors duration-200 cursor-pointer z-10 ${
+                speed === 'expedited' ? 'text-white' : 'text-[#565B63] hover:text-[#16191F]'
               }`}
             >
+              {speed === 'expedited' && (
+                <motion.span
+                  layoutId="planner-speed-pill"
+                  className="absolute inset-0 bg-[#2036E8] rounded-md shadow-sm -z-10"
+                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                />
+              )}
               ⚡ Fast-Track
             </button>
           </div>
@@ -206,7 +223,9 @@ Estimate: $${finalPrice.toLocaleString()} in ~${finalDays} business days.`;
 
         {/* Action button triggers */}
         <div className="mt-8 pt-6 border-t border-[#E2E0D6] space-y-3">
-          <button
+          <motion.button
+            whileHover={selectedIds.length === 0 ? {} : { scale: 1.02, y: -1 }}
+            whileTap={selectedIds.length === 0 ? {} : { scale: 0.98 }}
             onClick={handlePrefill}
             disabled={selectedIds.length === 0}
             className={`w-full py-3 rounded-full text-xs font-semibold flex items-center justify-center gap-1 cursor-pointer transition-all ${
@@ -217,9 +236,11 @@ Estimate: $${finalPrice.toLocaleString()} in ~${finalDays} business days.`;
           >
             Apply to Project Brief
             <ChevronRight className="w-3.5 h-3.5" />
-          </button>
+          </motion.button>
           
-          <button
+          <motion.button
+            whileHover={selectedIds.length === 0 ? {} : { scale: 1.02, y: -1 }}
+            whileTap={selectedIds.length === 0 ? {} : { scale: 0.98 }}
             onClick={handleCopyBrief}
             disabled={selectedIds.length === 0}
             className="w-full bg-white hover:bg-gray-50 border border-[#E2E0D6] py-2.5 rounded-full text-[11px] font-mono font-medium flex items-center justify-center gap-1.5 cursor-pointer text-[#565B63] transition-all hover:border-[#16191F]"
@@ -235,7 +256,7 @@ Estimate: $${finalPrice.toLocaleString()} in ~${finalDays} business days.`;
                 Copy Structured Brief MD
               </>
             )}
-          </button>
+          </motion.button>
         </div>
       </div>
     </div>

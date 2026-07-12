@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { motion } from 'motion/react';
 import { LogLine } from '../types';
 import { INITIAL_LOGS } from '../data';
 import { Play, RotateCcw, AlertTriangle, CheckCircle, Terminal, HelpCircle } from 'lucide-react';
@@ -142,14 +143,21 @@ export default function DeployLogConsole() {
         </div>
         <span className="font-mono text-xs text-[#565B63] ml-2">deploy.log — simulator</span>
         {stdout.length > 0 && (
-          <button 
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={resetConsoleLogs}
             className="ml-auto flex items-center gap-1 text-[10px] text-red-500 font-mono border border-red-200 hover:bg-red-50 px-2 py-0.5 rounded cursor-pointer transition-colors"
             title="Reset to default logs"
           >
-            <RotateCcw className="w-2.5 h-2.5" />
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ repeat: 0, duration: 0.5 }}
+            >
+              <RotateCcw className="w-2.5 h-2.5" />
+            </motion.div>
             Reset
-          </button>
+          </motion.button>
         )}
       </div>
 
@@ -220,18 +228,20 @@ export default function DeployLogConsole() {
               </div>
             </div>
 
-            <button
+            <motion.button
+              whileHover={isDeploying ? {} : { scale: 1.04, y: -1 }}
+              whileTap={isDeploying ? {} : { scale: 0.96 }}
               type="submit"
               disabled={isDeploying}
               className={`flex items-center gap-1.5 font-mono text-xs px-4 py-2 rounded-full font-semibold transition-all shadow-sm cursor-pointer ${
                 isDeploying
                   ? 'bg-gray-100 border border-gray-200 text-gray-400'
-                  : 'bg-[#2036E8] text-white hover:bg-[#1626A8] hover:shadow-md active:scale-95'
+                  : 'bg-[#2036E8] text-white hover:bg-[#1626A8] hover:shadow-md'
               }`}
             >
               <Play className="w-3 h-3" />
               {isDeploying ? 'Deploying...' : 'Trigger Deploy'}
-            </button>
+            </motion.button>
           </div>
         </form>
       </div>

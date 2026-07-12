@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { motion } from 'motion/react';
 import { INITIAL_PROJECTS, SERVICES } from './data';
 import { Project } from './types';
 import DeployLogConsole from './components/DeployLogConsole';
@@ -28,6 +29,7 @@ import {
 export default function App() {
   // Theme state: 'paper' (original warm light) vs 'midnight' (cyber developer dark)
   const [theme, setTheme] = useState<'paper' | 'midnight'>('paper');
+  const [hoveredNav, setHoveredNav] = useState<number | null>(null);
   const [filterTag, setFilterTag] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [contactName, setContactName] = useState('');
@@ -105,32 +107,49 @@ export default function App() {
             lobos<span className={theme === 'midnight' ? 'text-emerald-400' : 'text-[#2036E8]'}>.</span>dev
           </a>
 
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#work" className={`text-xs font-semibold tracking-wide uppercase transition-colors hover:text-[#2036E8] ${
-              theme === 'midnight' ? 'text-slate-400 hover:text-emerald-400' : 'text-[#565B63]'
-            }`}>
-              Work
-            </a>
-            <a href="#services" className={`text-xs font-semibold tracking-wide uppercase transition-colors hover:text-[#2036E8] ${
-              theme === 'midnight' ? 'text-slate-400 hover:text-emerald-400' : 'text-[#565B63]'
-            }`}>
-              Services
-            </a>
-            <a href="#planner" className={`text-xs font-semibold tracking-wide uppercase transition-colors hover:text-[#2036E8] ${
-              theme === 'midnight' ? 'text-slate-400 hover:text-emerald-400' : 'text-[#565B63]'
-            }`}>
-              Scope Estimator
-            </a>
-            <a href="#about" className={`text-xs font-semibold tracking-wide uppercase transition-colors hover:text-[#2036E8] ${
-              theme === 'midnight' ? 'text-slate-400 hover:text-emerald-400' : 'text-[#565B63]'
-            }`}>
-              About
-            </a>
+          <div className="hidden md:flex items-center gap-1">
+            {[
+              { label: 'Work', href: '#work' },
+              { label: 'Services', href: '#services' },
+              { label: 'Scope Estimator', href: '#planner' },
+              { label: 'About', href: '#about' }
+            ].map((item, idx) => (
+              <a
+                key={item.label}
+                href={item.href}
+                onMouseEnter={() => setHoveredNav(idx)}
+                onMouseLeave={() => setHoveredNav(null)}
+                className={`relative px-4 py-2 rounded-full text-xs font-bold tracking-wide uppercase transition-colors duration-200 z-10 select-none ${
+                  theme === 'midnight'
+                    ? hoveredNav === idx
+                      ? 'text-emerald-400'
+                      : 'text-slate-400 hover:text-emerald-400'
+                    : hoveredNav === idx
+                      ? 'text-[#2036E8]'
+                      : 'text-[#565B63] hover:text-[#2036E8]'
+                }`}
+              >
+                {hoveredNav === idx && (
+                  <motion.span
+                    layoutId="nav-hover-pill"
+                    className={`absolute inset-0 rounded-full -z-10 ${
+                      theme === 'midnight' 
+                        ? 'bg-slate-800/60 border border-slate-700/50' 
+                        : 'bg-[#E2E0D6]/50 border border-[#D2CFBE]/40'
+                    }`}
+                    transition={{ type: 'spring', stiffness: 380, damping: 28 }}
+                  />
+                )}
+                {item.label}
+              </a>
+            ))}
           </div>
 
           <div className="flex items-center gap-4">
             {/* Theme Toggle Switch */}
-            <button
+            <motion.button
+              whileHover={{ scale: 1.1, rotate: 15 }}
+              whileTap={{ scale: 0.9 }}
               onClick={toggleTheme}
               className={`p-2 rounded-full border cursor-pointer transition-colors ${
                 theme === 'midnight' 
@@ -140,9 +159,11 @@ export default function App() {
               title={theme === 'midnight' ? "Switch to warm paper look" : "Switch to midnight console look"}
             >
               {theme === 'midnight' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
+            </motion.button>
 
-            <a 
+            <motion.a 
+              whileHover={{ scale: 1.05, y: -1 }}
+              whileTap={{ scale: 0.95 }}
               href="#contact" 
               className={`font-mono text-[11px] font-bold border rounded-full px-4 py-2 transition-all cursor-pointer ${
                 theme === 'midnight'
@@ -151,14 +172,18 @@ export default function App() {
               }`}
             >
               start a project →
-            </a>
+            </motion.a>
           </div>
         </div>
       </nav>
-
       {/* HERO SECTION */}
       <header id="top" className="max-w-6xl mx-auto px-6 py-12 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        <div className="lg:col-span-7 space-y-6">
+        <motion.div 
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="lg:col-span-7 space-y-6"
+        >
           <div className="inline-flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse inline-block shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
             <span className={`font-mono text-xs font-bold tracking-widest ${
@@ -182,7 +207,9 @@ export default function App() {
           </p>
 
           <div className="flex flex-wrap gap-4 pt-2">
-            <a 
+            <motion.a 
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.98 }}
               href="#planner" 
               className={`px-6 py-3.5 rounded-full text-xs font-semibold shadow-sm hover:shadow-md transition-all cursor-pointer ${
                 theme === 'midnight'
@@ -191,8 +218,10 @@ export default function App() {
               }`}
             >
               Plan Your Project Scope
-            </a>
-            <a 
+            </motion.a>
+            <motion.a 
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.98 }}
               href="#work" 
               className={`px-6 py-3.5 rounded-full text-xs font-semibold border transition-colors cursor-pointer ${
                 theme === 'midnight'
@@ -201,9 +230,9 @@ export default function App() {
               }`}
             >
               Browse Selected Work
-            </a>
+            </motion.a>
           </div>
-        </div>
+        </motion.div>
 
         {/* Dynamic Log Console Component */}
         <div className="lg:col-span-5 w-full">
@@ -262,16 +291,25 @@ export default function App() {
                 <button
                   key={tag}
                   onClick={() => setFilterTag(tag)}
-                  className={`text-[11px] font-mono font-medium px-3 py-1 rounded-full border cursor-pointer transition-all ${
+                  className={`relative text-[11px] font-mono font-medium px-3 py-1 rounded-full border cursor-pointer transition-colors duration-200 ${
                     filterTag === tag
                       ? theme === 'midnight'
-                        ? 'bg-emerald-400 border-emerald-400 text-black font-bold'
-                        : 'bg-[#2036E8] border-[#2036E8] text-white'
+                        ? 'border-emerald-400 text-black font-bold z-10'
+                        : 'border-[#2036E8] text-white z-10'
                       : theme === 'midnight'
                         ? 'border-slate-800 hover:border-slate-700 text-slate-400'
                         : 'border-[#E2E0D6] hover:border-[#16191F] text-[#565B63]'
                   }`}
                 >
+                  {filterTag === tag && (
+                    <motion.span
+                      layoutId="filter-pill-bg"
+                      className={`absolute inset-0 rounded-full -z-10 ${
+                        theme === 'midnight' ? 'bg-emerald-400' : 'bg-[#2036E8]'
+                      }`}
+                      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                    />
+                  )}
                   {tag}
                 </button>
               ))}
@@ -569,7 +607,9 @@ export default function App() {
                     />
                   </div>
 
-                  <button
+                  <motion.button
+                    whileHover={isSubmitting ? {} : { scale: 1.02, y: -1 }}
+                    whileTap={isSubmitting ? {} : { scale: 0.98 }}
                     type="submit"
                     disabled={isSubmitting}
                     className={`w-full py-3 rounded-full text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all ${
@@ -589,7 +629,7 @@ export default function App() {
                         Transmit Project Brief
                       </>
                     )}
-                  </button>
+                  </motion.button>
                 </form>
               )}
             </div>
