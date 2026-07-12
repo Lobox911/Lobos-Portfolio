@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { INITIAL_PROJECTS, SERVICES } from './data';
 import { Project } from './types';
 import DeployLogConsole from './components/DeployLogConsole';
@@ -25,13 +25,16 @@ import {
   ExternalLink,
   Search,
   Filter,
-  Settings as SettingsIcon
+  Settings as SettingsIcon,
+  Menu,
+  X
 } from 'lucide-react';
 
 export default function App() {
   // Theme state: 'paper' (original warm light) vs 'midnight' (cyber developer dark)
   const [theme, setTheme] = useState<'paper' | 'midnight'>('paper');
   const [hoveredNav, setHoveredNav] = useState<number | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [filterTag, setFilterTag] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [contactName, setContactName] = useState('');
@@ -339,7 +342,7 @@ export default function App() {
             ))}
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             {/* Admin Dashboard Panel Trigger */}
             <motion.button
               whileHover={{ scale: 1.1 }}
@@ -374,7 +377,7 @@ export default function App() {
               whileHover={{ scale: 1.05, y: -1 }}
               whileTap={{ scale: 0.95 }}
               href="#contact" 
-              className={`font-mono text-[11px] font-bold border rounded-full px-4 py-2 transition-all cursor-pointer ${
+              className={`hidden sm:inline-block font-mono text-[11px] font-bold border rounded-full px-4 py-2 transition-all cursor-pointer ${
                 theme === 'midnight'
                   ? 'border-emerald-500 text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500 hover:text-black'
                   : 'border-[#16191F] text-[#16191F] hover:bg-[#16191F] hover:text-[#F7F6F1]'
@@ -382,9 +385,76 @@ export default function App() {
             >
               start a project →
             </motion.a>
+
+            {/* Hamburger Mobile Menu Toggle */}
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className={`p-2 rounded-full border cursor-pointer transition-colors md:hidden ${
+                theme === 'midnight' 
+                  ? 'border-slate-800 hover:bg-slate-800 text-emerald-400' 
+                  : 'border-[#E2E0D6] hover:bg-[#E2E0D6]/30 text-[#16191F]'
+              }`}
+              title="Toggle navigation menu"
+            >
+              {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            </motion.button>
           </div>
         </div>
       </nav>
+
+      {/* MOBILE DROPDOWN NAVIGATION */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            className={`md:hidden border-b overflow-hidden transition-all-custom ${
+              theme === 'midnight' 
+                ? 'bg-[#0E1117]/95 border-slate-800' 
+                : 'bg-[#F7F6F1]/95 border-[#E2E0D6]'
+            }`}
+          >
+            <div className="px-6 py-4 space-y-3 flex flex-col">
+              {[
+                { label: 'Work', href: '#work' },
+                { label: 'Services', href: '#services' },
+                { label: 'Scope Estimator', href: '#planner' },
+                { label: 'About', href: '#about' }
+              ].map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`text-sm font-bold tracking-wider uppercase py-2 border-b border-dashed transition-colors ${
+                    theme === 'midnight'
+                      ? 'border-slate-800/60 text-slate-300 hover:text-emerald-400'
+                      : 'border-[#E2E0D6]/60 text-[#565B63] hover:text-[#2036E8]'
+                  }`}
+                >
+                  {item.label}
+                </a>
+              ))}
+              
+              <div className="pt-2">
+                <a
+                  href="#contact"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`w-full text-center block font-mono text-xs font-bold border rounded-full py-3 transition-all cursor-pointer ${
+                    theme === 'midnight'
+                      ? 'border-emerald-500 text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500 hover:text-black'
+                      : 'border-[#16191F] text-[#16191F] hover:bg-[#16191F] hover:text-[#F7F6F1]'
+                  }`}
+                >
+                  start a project →
+                </a>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* HERO SECTION */}
       <header id="top" className="max-w-6xl mx-auto px-6 py-12 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         <motion.div 
@@ -669,7 +739,7 @@ export default function App() {
             </p>
           </div>
 
-          <ProjectPlanner onPreFillBrief={handlePreFillBrief} />
+          <ProjectPlanner onPreFillBrief={handlePreFillBrief} theme={theme} />
         </div>
       </section>
 

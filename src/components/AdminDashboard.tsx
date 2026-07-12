@@ -343,44 +343,44 @@ export default function AdminDashboard({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 bg-[#16191F]/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-[#16191F]/70 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4">
           
           <motion.div 
             initial={{ opacity: 0, scale: 0.95, y: 15 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 15 }}
             transition={{ type: "spring", duration: 0.4 }}
-            className={`w-full max-w-5xl h-[85vh] rounded-xl shadow-2xl overflow-hidden flex flex-col border ${bgPanel}`}
+            className={`w-full max-w-5xl h-[92vh] sm:h-[85vh] rounded-xl shadow-2xl overflow-hidden flex flex-col border ${bgPanel}`}
             onClick={e => e.stopPropagation()}
           >
             {/* Header bar */}
-            <div className={`flex items-center justify-between px-6 py-4 border-b ${
+            <div className={`flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b gap-3 sm:gap-4 ${
               theme === 'midnight' ? 'bg-slate-900 border-slate-800' : 'bg-[#F2EFE8] border-[#E2E0D6]'
             }`}>
               <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-lg ${theme === 'midnight' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-[#2036E8]/10 text-[#2036E8]'}`}>
-                  <Settings className="w-5 h-5 animate-spin-slow" />
+                <div className={`p-1.5 sm:p-2 rounded-lg shrink-0 ${theme === 'midnight' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-[#2036E8]/10 text-[#2036E8]'}`}>
+                  <Settings className="w-4 h-4 sm:w-5 sm:h-5 animate-spin-slow" />
                 </div>
-                <div>
-                  <h2 className="font-display font-black text-sm tracking-tight flex items-center gap-2">
-                    Developer Control Desk & Admin Center
+                <div className="min-w-0">
+                  <h2 className="font-display font-black text-xs sm:text-sm tracking-tight flex flex-wrap items-center gap-1.5">
+                    <span className="truncate">Control Desk & Admin Center</span>
                     {isDbConnected ? (
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5 shadow-[0_0_8px_rgba(16,185,129,0.15)]">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        Neon PostgreSQL Active
+                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1 shadow-[0_0_8px_rgba(16,185,129,0.15)]">
+                        <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></span>
+                        Postgres
                       </span>
                     ) : (
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20 flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                        LocalStorage Sandbox Mode
+                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20 flex items-center gap-1">
+                        <span className="w-1 h-1 rounded-full bg-amber-500"></span>
+                        Sandbox
                       </span>
                     )}
                   </h2>
-                  <p className={`text-[10px] font-mono ${textMuted}`}>Configure copy, edit portfolio architectures, and track inquiry logs</p>
+                  <p className={`text-[9px] sm:text-[10px] font-mono truncate ${textMuted} hidden sm:block`}>Configure copy, portfolio, and inquiries</p>
                 </div>
               </div>
               
-              <div className="flex items-center gap-3">
+              <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3">
                 {/* Reset to Default */}
                 <button
                   onClick={() => {
@@ -389,38 +389,38 @@ export default function AdminDashboard({
                       showNotification();
                     }
                   }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-[10px] font-bold border transition-colors cursor-pointer ${
+                  className={`flex items-center gap-1 px-2.5 py-1 sm:py-1.5 rounded-md font-mono text-[9px] sm:text-[10px] font-bold border transition-colors cursor-pointer ${
                     theme === 'midnight'
                       ? 'border-red-900/40 text-red-400 hover:bg-red-950/20 bg-red-950/5'
                       : 'border-red-200 text-red-600 hover:bg-red-50 bg-red-50/30'
                   }`}
                   title="Reset site back to original data parameters"
                 >
-                  <RefreshCw className="w-3 h-3" />
-                  Restore Defaults
+                  <RefreshCw className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                  <span>Restore Defaults</span>
                 </button>
 
                 <button
                   onClick={onClose}
-                  className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
+                  className={`p-1 sm:p-1.5 rounded-lg border transition-colors cursor-pointer ${
                     theme === 'midnight' ? 'border-slate-850 hover:bg-slate-800' : 'border-[#E2E0D6] hover:bg-[#E2E0D6]/30'
                   }`}
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </button>
               </div>
             </div>
 
             {/* Main content body (Two column split: Left navigation tab, Right scrollable forms) */}
-            <div className="flex-1 flex overflow-hidden">
+            <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
               
               {/* SIDE NAVIGATION BAR */}
-              <div className={`w-60 border-r p-4 flex flex-col justify-between shrink-0 ${
+              <div className={`w-full md:w-60 border-b md:border-b-0 md:border-r p-3 sm:p-4 flex flex-col justify-between shrink-0 ${
                 theme === 'midnight' ? 'bg-[#0E1117] border-slate-800' : 'bg-[#FAF9F6] border-[#E2E0D6]'
               }`}>
-                <div className="space-y-1">
+                <div className="flex flex-row md:flex-col gap-1 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0 scrollbar-none shrink-0">
                   {[
-                    { id: 'hero', label: '1. Header & Hero Copy', icon: Tv },
+                    { id: 'hero', label: '1. Hero & Header', icon: Tv },
                     { id: 'projects', label: '2. Portfolio Projects', icon: Briefcase },
                     { id: 'services', label: '3. Core Services', icon: Layers },
                     { id: 'inquiries', label: '4. Inquiry Inbox', icon: Inbox, badge: submissions.length }
@@ -430,7 +430,7 @@ export default function AdminDashboard({
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id as any)}
-                        className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-left text-xs font-mono font-bold transition-all cursor-pointer ${
+                        className={`flex items-center justify-between gap-2 px-3 py-2 md:py-2.5 rounded-lg text-left text-[11px] md:text-xs font-mono font-bold transition-all cursor-pointer whitespace-nowrap md:whitespace-normal shrink-0 ${
                           isActive
                             ? theme === 'midnight'
                               ? 'bg-emerald-500 text-black shadow-[0_4px_12px_rgba(16,185,129,0.2)]'
@@ -440,12 +440,12 @@ export default function AdminDashboard({
                               : 'text-[#565B63] hover:text-[#16191F] hover:bg-[#E2E0D6]/40'
                         }`}
                       >
-                        <span className="flex items-center gap-2">
+                        <span className="flex items-center gap-1.5">
                           <tab.icon className="w-3.5 h-3.5" />
                           {tab.label}
                         </span>
                         {tab.badge !== undefined && tab.badge > 0 && (
-                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-black ${
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-black ml-1.5 ${
                             isActive 
                               ? 'bg-white text-black' 
                               : theme === 'midnight' 
@@ -460,7 +460,7 @@ export default function AdminDashboard({
                   })}
                 </div>
 
-                <div className={`p-3 rounded-lg border text-[10px] leading-relaxed font-mono ${
+                <div className={`p-3 rounded-lg border text-[10px] leading-relaxed font-mono hidden md:block ${
                   theme === 'midnight' ? 'bg-slate-900/30 border-slate-800 text-slate-500' : 'bg-[#E2E0D6]/20 border-[#E2E0D6] text-[#565B63]'
                 }`}>
                   <ShieldCheck className="w-4 h-4 mb-1 text-emerald-500 inline mr-1" />
@@ -469,7 +469,7 @@ export default function AdminDashboard({
               </div>
 
               {/* FORMS / EDITOR AREA */}
-              <div className={`flex-1 p-6 overflow-y-auto custom-scrollbar ${bgMain}`}>
+              <div className={`flex-1 p-4 sm:p-6 overflow-y-auto custom-scrollbar ${bgMain}`}>
                 
                 {/* Database Connectivity Status Alert Banner */}
                 {!isDbConnected ? (
