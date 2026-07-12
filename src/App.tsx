@@ -179,34 +179,67 @@ export default function App() {
       {/* HERO SECTION */}
       <header id="top" className="max-w-6xl mx-auto px-6 py-12 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         <motion.div 
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.15,
+                delayChildren: 0.1
+              }
+            }
+          }}
           className="lg:col-span-7 space-y-6"
         >
-          <div className="inline-flex items-center gap-2">
+          <motion.div 
+            variants={{
+              hidden: { opacity: 0, y: 15 },
+              visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 120, damping: 14 } }
+            }}
+            className="inline-flex items-center gap-2"
+          >
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse inline-block shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
             <span className={`font-mono text-xs font-bold tracking-widest ${
               theme === 'midnight' ? 'text-emerald-400' : 'text-[#2036E8]'
             }`}>
               AVAILABLE FOR DEPLOYMENTS IN Q3 2026
             </span>
-          </div>
+          </motion.div>
 
-          <h1 className="font-display font-extrabold text-4xl md:text-6xl tracking-tight leading-[1.05] text-balance">
+          <motion.h1 
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 12 } }
+            }}
+            className="font-display font-extrabold text-4xl md:text-6xl tracking-tight leading-[1.05] text-balance"
+          >
             Ideas are cheap.<br />
             <em className={`not-italic font-black ${
               theme === 'midnight' ? 'text-emerald-400' : 'text-[#2036E8]'
             }`}>Shipped</em> is the whole game.
-          </h1>
+          </motion.h1>
 
-          <p className={`text-base md:text-lg max-w-xl leading-relaxed ${
-            theme === 'midnight' ? 'text-slate-300' : 'text-[#565B63]'
-          }`}>
+          <motion.p 
+            variants={{
+              hidden: { opacity: 0, y: 15 },
+              visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 14 } }
+            }}
+            className={`text-base md:text-lg max-w-xl leading-relaxed ${
+              theme === 'midnight' ? 'text-slate-300' : 'text-[#565B63]'
+            }`}
+          >
             I'm Lobos, a full-stack developer who takes products from a rough brief to deployed, running, and paying for themselves. Client portals, booking systems, SaaS tools, all built end-to-end and maintained after launch.
-          </p>
+          </motion.p>
 
-          <div className="flex flex-wrap gap-4 pt-2">
+          <motion.div 
+            variants={{
+              hidden: { opacity: 0, y: 12 },
+              visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 14 } }
+            }}
+            className="flex flex-wrap gap-4 pt-2"
+          >
             <motion.a 
               whileHover={{ scale: 1.04, y: -2 }}
               whileTap={{ scale: 0.98 }}
@@ -231,13 +264,18 @@ export default function App() {
             >
               Browse Selected Work
             </motion.a>
-          </div>
+          </motion.div>
         </motion.div>
 
         {/* Dynamic Log Console Component */}
-        <div className="lg:col-span-5 w-full">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.97, x: 20 }}
+          animate={{ opacity: 1, scale: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          className="lg:col-span-5 w-full"
+        >
           <DeployLogConsole />
-        </div>
+        </motion.div>
       </header>
 
       {/* SELECTED WORK SECTION */}
