@@ -8,6 +8,7 @@ import DeployLogConsole from './components/DeployLogConsole';
 import ProjectPlanner from './components/ProjectPlanner';
 import ProjectCardRow from './components/ProjectCardRow';
 import InteractiveTerminal from './components/InteractiveTerminal';
+import AdminDashboard from './components/AdminDashboard';
 import { 
   Terminal, 
   Sparkles, 
@@ -23,7 +24,8 @@ import {
   Check, 
   ExternalLink,
   Search,
-  Filter
+  Filter,
+  Settings as SettingsIcon
 } from 'lucide-react';
 
 export default function App() {
@@ -38,6 +40,151 @@ export default function App() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  // Admin Dashboard State variables
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isDbConnected, setIsDbConnected] = useState(false);
+  const [heroBadgeText, setHeroBadgeText] = useState('AVAILABLE FOR DEPLOYMENTS IN Q3 2026');
+  const [heroTitle, setHeroTitle] = useState('Ideas are cheap.');
+  const [heroSubtitle, setHeroSubtitle] = useState('Shipped is everything.');
+  const [heroDescription, setHeroDescription] = useState("I'm Lobos, a full-stack developer who takes products from a rough brief to deployed, running, and paying for themselves. Client portals, booking systems, SaaS tools, all built end-to-end and maintained after launch.");
+  const [projectsList, setProjectsList] = useState<Project[]>(INITIAL_PROJECTS);
+  const [servicesList, setServicesList] = useState(SERVICES);
+  const [submissions, setSubmissions] = useState<Array<{id: string; name: string; email: string; message: string; date: string}>>([]);
+
+  // Load configuration and submissions from Database or LocalStorage on mount safely
+  useEffect(() => {
+    async function loadConfig() {
+      try {
+        const res = await fetch('/api/config');
+        const data = await res.json();
+        
+        if (data.connected) {
+          setIsDbConnected(true);
+          if (data.hero) {
+            if (data.hero.badge) setHeroBadgeText(data.hero.badge);
+            if (data.hero.title) setHeroTitle(data.hero.title);
+            if (data.hero.subtitle) setHeroSubtitle(data.hero.subtitle);
+            if (data.hero.description) setHeroDescription(data.hero.description);
+          }
+          if (data.projects && data.projects.length > 0) {
+            setProjectsList(data.projects);
+          }
+          if (data.services && data.services.length > 0) {
+            setServicesList(data.services);
+          }
+        } else {
+          loadFromLocalStorage();
+        }
+      } catch (err) {
+        console.error('Failed to load DB config, falling back to LocalStorage:', err);
+        loadFromLocalStorage();
+      }
+    }
+
+    async function loadInquiries() {
+      try {
+        const res = await fetch('/api/inquiries');
+        const data = await res.json();
+        if (data.connected && data.submissions) {
+          setSubmissions(data.submissions);
+        } else {
+          const subs = localStorage.getItem('lobos_submissions');
+          if (subs) {
+            try {
+              setSubmissions(JSON.parse(subs));
+            } catch (e) {
+              console.error(e);
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load DB inquiries:', err);
+      }
+    }
+
+    function loadFromLocalStorage() {
+      const badge = localStorage.getItem('lobos_hero_badge');
+      const title = localStorage.getItem('lobos_hero_title');
+      const sub = localStorage.getItem('lobos_hero_sub');
+      const desc = localStorage.getItem('lobos_hero_desc');
+      const projs = localStorage.getItem('lobos_projects');
+      const svcs = localStorage.getItem('lobos_services');
+      const subs = localStorage.getItem('lobos_submissions');
+
+      if (badge) setHeroBadgeText(badge);
+      if (title) setHeroTitle(title);
+      if (sub) setHeroSubtitle(sub);
+      if (desc) setHeroDescription(desc);
+      if (projs) {
+        try {
+          setProjectsList(JSON.parse(projs));
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      if (svcs) {
+        try {
+          setServicesList(JSON.parse(svcs));
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      if (subs) {
+        try {
+          setSubmissions(JSON.parse(subs));
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+
+    loadConfig();
+    loadInquiries();
+  }, []);
+
+  const handleResetDefaults = async () => {
+    if (isDbConnected) {
+      try {
+        await fetch('/api/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'resetDefaults' })
+        });
+        
+        // Reload fresh settings from database
+        const res = await fetch('/api/config');
+        const data = await res.json();
+        if (data.connected) {
+          if (data.hero) {
+            setHeroBadgeText(data.hero.badge || 'AVAILABLE FOR DEPLOYMENTS IN Q3 2026');
+            setHeroTitle(data.hero.title || 'Ideas are cheap.');
+            setHeroSubtitle(data.hero.subtitle || 'Shipped is everything.');
+            setHeroDescription(data.hero.description || "I'm Lobos, a full-stack developer who takes products from a rough brief to deployed, running, and paying for themselves.");
+          }
+          setProjectsList(data.projects || INITIAL_PROJECTS);
+          setServicesList(data.services || SERVICES);
+        }
+      } catch (err) {
+        console.error('Failed to reset DB config:', err);
+      }
+    } else {
+      localStorage.removeItem('lobos_hero_badge');
+      localStorage.removeItem('lobos_hero_title');
+      localStorage.removeItem('lobos_hero_sub');
+      localStorage.removeItem('lobos_hero_desc');
+      localStorage.removeItem('lobos_projects');
+      localStorage.removeItem('lobos_services');
+      
+      setHeroBadgeText('AVAILABLE FOR DEPLOYMENTS IN Q3 2026');
+      setHeroTitle('Ideas are cheap.');
+      setHeroSubtitle('Shipped is everything.');
+      setHeroDescription("I'm Lobos, a full-stack developer who takes products from a rough brief to deployed, running, and paying for themselves. Client portals, booking systems, SaaS tools, all built end-to-end and maintained after launch.");
+      setProjectsList(INITIAL_PROJECTS);
+      setServicesList(SERVICES);
+    }
+  };
+
+
   // Sync theme with HTML background
   useEffect(() => {
     const root = document.documentElement;
@@ -51,10 +198,10 @@ export default function App() {
   }, [theme]);
 
   // Extract all unique tags
-  const allTags = ['All', ...Array.from(new Set(INITIAL_PROJECTS.flatMap(p => p.stack)))];
+  const allTags = ['All', ...Array.from(new Set(projectsList.flatMap(p => p.stack)))];
 
   // Filter projects
-  const filteredProjects = INITIAL_PROJECTS.filter(p => {
+  const filteredProjects = projectsList.filter(p => {
     const matchesTag = filterTag === 'All' || p.stack.includes(filterTag);
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           p.subtitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -66,23 +213,70 @@ export default function App() {
     setContactMessage(briefText);
   };
 
-  const handleContactSubmit = (e: React.FormEvent) => {
+  const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!contactName || !contactEmail || !contactMessage) return;
 
     setIsSubmitting(true);
     
-    // Simulate API request
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-      setContactName('');
-      setContactEmail('');
-      setContactMessage('');
-      
-      // Reset success check after 5s
-      setTimeout(() => setIsSubmitted(false), 6000);
-    }, 1500);
+    if (isDbConnected) {
+      try {
+        const res = await fetch('/api/inquiries', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: contactName,
+            email: contactEmail,
+            message: contactMessage
+          })
+        });
+        const data = await res.json();
+        setIsSubmitting(false);
+        if (data.success && data.submission) {
+          setIsSubmitted(true);
+          setSubmissions(prev => [data.submission, ...prev]);
+          setContactName('');
+          setContactEmail('');
+          setContactMessage('');
+          setTimeout(() => setIsSubmitted(false), 6000);
+        } else {
+          console.error('Failed to submit via database:', data.error);
+        }
+      } catch (err) {
+        console.error('Failed to submit via database API:', err);
+        setIsSubmitting(false);
+      }
+    } else {
+      // Simulate API request fallback
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setIsSubmitted(true);
+        
+        const newSubmission = {
+          id: Math.random().toString(36).substring(2, 9),
+          name: contactName,
+          email: contactEmail,
+          message: contactMessage,
+          date: new Date().toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          })
+        };
+
+        const updatedSubs = [newSubmission, ...submissions];
+        setSubmissions(updatedSubs);
+        localStorage.setItem('lobos_submissions', JSON.stringify(updatedSubs));
+
+        setContactName('');
+        setContactEmail('');
+        setContactMessage('');
+        
+        // Reset success check after 5s
+        setTimeout(() => setIsSubmitted(false), 6000);
+      }, 1500);
+    }
   };
 
   const toggleTheme = () => {
@@ -146,6 +340,21 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-4">
+            {/* Admin Dashboard Panel Trigger */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => setIsAdminOpen(true)}
+              className={`p-2 rounded-full border cursor-pointer transition-colors ${
+                theme === 'midnight' 
+                  ? 'border-slate-800 hover:bg-slate-800 text-emerald-400 hover:border-emerald-500/30' 
+                  : 'border-[#E2E0D6] hover:bg-[#E2E0D6]/30 text-[#2036E8] hover:border-[#2036E8]/30'
+              }`}
+              title="Open Site Administrator Dashboard"
+            >
+              <SettingsIcon className="w-4 h-4" />
+            </motion.button>
+
             {/* Theme Toggle Switch */}
             <motion.button
               whileHover={{ scale: 1.1, rotate: 15 }}
@@ -201,10 +410,10 @@ export default function App() {
             className="inline-flex items-center gap-2"
           >
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse inline-block shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
-            <span className={`font-mono text-xs font-bold tracking-widest ${
+            <span className={`font-mono text-xs font-bold tracking-widest uppercase ${
               theme === 'midnight' ? 'text-emerald-400' : 'text-[#2036E8]'
             }`}>
-              AVAILABLE FOR DEPLOYMENTS IN Q3 2026
+              {heroBadgeText}
             </span>
           </motion.div>
 
@@ -215,10 +424,10 @@ export default function App() {
             }}
             className="font-display font-extrabold text-4xl md:text-6xl tracking-tight leading-[1.05] text-balance"
           >
-            Ideas are cheap.<br />
+            {heroTitle}<br />
             <em className={`not-italic font-black ${
               theme === 'midnight' ? 'text-emerald-400' : 'text-[#2036E8]'
-            }`}>Shipped</em> is the whole game.
+            }`}>{heroSubtitle}</em>
           </motion.h1>
 
           <motion.p 
@@ -230,7 +439,7 @@ export default function App() {
               theme === 'midnight' ? 'text-slate-300' : 'text-[#565B63]'
             }`}
           >
-            I'm Lobos, a full-stack developer who takes products from a rough brief to deployed, running, and paying for themselves. Client portals, booking systems, SaaS tools, all built end-to-end and maintained after launch.
+            {heroDescription}
           </motion.p>
 
           <motion.div 
@@ -405,7 +614,7 @@ export default function App() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {SERVICES.map((svc, index) => {
+          {servicesList.map((svc, index) => {
             const headingColors = [
               'text-[#000000]',
               'text-[#0a0a0b]',
@@ -701,6 +910,47 @@ export default function App() {
 
       {/* Reto developer command shell console modal */}
       <InteractiveTerminal />
+
+      {/* Floating Admin Trigger Button on bottom left */}
+      <motion.button
+        whileHover={{ scale: 1.06, y: -2 }}
+        whileTap={{ scale: 0.94 }}
+        onClick={() => setIsAdminOpen(true)}
+        className={`fixed bottom-6 left-6 z-50 p-3.5 rounded-full shadow-lg transition-all cursor-pointer flex items-center gap-2 group whitespace-nowrap ${
+          theme === 'midnight'
+            ? 'bg-emerald-500 text-black hover:bg-emerald-400 shadow-[0_8px_30px_rgba(16,185,129,0.36)]'
+            : 'bg-[#16191F] text-white hover:bg-black shadow-[0_8px_30px_rgba(22,25,31,0.3)]'
+        }`}
+        title="Open Site Administrator Dashboard"
+      >
+        <SettingsIcon className="w-5 h-5" />
+        <span className="text-xs font-mono font-bold max-w-0 overflow-hidden group-hover:max-w-[120px] transition-all duration-300 ease-out whitespace-nowrap">
+          Admin Panel
+        </span>
+      </motion.button>
+
+      {/* Admin Dashboard Control Panel Modal Overlay */}
+      <AdminDashboard
+        isOpen={isAdminOpen}
+        onClose={() => setIsAdminOpen(false)}
+        theme={theme}
+        isDbConnected={isDbConnected}
+        heroBadgeText={heroBadgeText}
+        setHeroBadgeText={setHeroBadgeText}
+        heroTitle={heroTitle}
+        setHeroTitle={setHeroTitle}
+        heroSubtitle={heroSubtitle}
+        setHeroSubtitle={setHeroSubtitle}
+        heroDescription={heroDescription}
+        setHeroDescription={setHeroDescription}
+        projects={projectsList}
+        setProjects={setProjectsList}
+        services={servicesList}
+        setServices={setServicesList}
+        submissions={submissions}
+        setSubmissions={setSubmissions}
+        onResetDefaults={handleResetDefaults}
+      />
 
     </div>
   );
