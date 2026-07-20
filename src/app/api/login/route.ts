@@ -3,7 +3,16 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(req: NextRequest) {
   try {
     const { password } = await req.json();
-    const systemPassword = process.env.ADMIN_PASSWORD || 'admin';
+    let systemPassword = (process.env.ADMIN_PASSWORD || 'admin').trim();
+    
+    // Strip wrapping double or single quotes if present
+    if (systemPassword.startsWith('"') && systemPassword.endsWith('"')) {
+      systemPassword = systemPassword.slice(1, -1);
+    } else if (systemPassword.startsWith("'") && systemPassword.endsWith("'")) {
+      systemPassword = systemPassword.slice(1, -1);
+    }
+
+    console.log("DEBUG LOGIN: resolved systemPassword =", JSON.stringify(systemPassword), "input =", JSON.stringify(password));
 
     if (!password) {
       return NextResponse.json({ success: false, error: "Password is required" }, { status: 400 });
