@@ -48,6 +48,12 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  // Check Admin Authorization
+  const authHeader = req.headers.get('authorization');
+  if (!authHeader || authHeader !== 'Bearer lobos-admin-secure-token-2026') {
+    return NextResponse.json({ error: "Unauthorized access. Please log in first." }, { status: 401 });
+  }
+
   if (!sql) {
     return NextResponse.json({ error: "DATABASE_URL is not configured" }, { status: 400 });
   }

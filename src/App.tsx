@@ -142,15 +142,18 @@ export default function App() {
     }
 
     loadConfig();
-    loadInquiries();
   }, []);
 
   const handleResetDefaults = async () => {
     if (isDbConnected) {
       try {
+        const token = typeof window !== 'undefined' ? sessionStorage.getItem('lobos_admin_token') : null;
         await fetch('/api/config', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
           body: JSON.stringify({ action: 'resetDefaults' })
         });
         

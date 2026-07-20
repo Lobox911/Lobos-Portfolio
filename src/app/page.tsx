@@ -1,9 +1,5 @@
-'use client';
-
-import dynamic from 'next/dynamic';
-
-const App = dynamic(() => import('../App'), { ssr: false });
+import ClientOnlyApp from '../components/ClientOnlyApp';
 
 export default function Home() {
-  return <App />;
+  return <ClientOnlyApp />;
 }
