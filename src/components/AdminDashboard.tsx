@@ -543,7 +543,7 @@ export default function AdminDashboard({
                 theme === 'midnight' ? 'border-slate-850 text-slate-500' : 'border-gray-100 text-[#9AA0A8]'
               }`}>
                 <span className="block font-bold mb-1">Developer Notice:</span>
-                <span>If evaluating, use password <strong className={theme === 'midnight' ? 'text-emerald-400' : 'text-[#2036E8]'}>admin</strong> to login instantly. Configured via the <code className="px-1 py-0.5 rounded bg-gray-500/10">ADMIN_PASSWORD</code> environment variable.</span>
+                <span>If evaluating, use password <strong className={theme === 'midnight' ? 'text-emerald-400' : 'text-[#2036E8]'}>Lobos1745</strong> to login instantly. Configured via the <code className="px-1 py-0.5 rounded bg-gray-500/10">ADMIN_PASSWORD</code> environment variable.</span>
               </div>
             </motion.div>
           ) : (

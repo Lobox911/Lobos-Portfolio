@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(req: NextRequest) {
   try {
     const { password } = await req.json();
-    let systemPassword = (process.env.ADMIN_PASSWORD || 'admin').trim();
+    let systemPassword = (process.env.ADMIN_PASSWORD || 'Lobos1745').trim();
     
     // Strip wrapping double or single quotes if present
     if (systemPassword.startsWith('"') && systemPassword.endsWith('"')) {
